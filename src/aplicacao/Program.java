@@ -9,6 +9,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 
 import entidades.Clientes;
 import entidades.Vendas;
@@ -18,21 +25,41 @@ public class Program {
 	public static final String diretorioEntrada = System.getProperty("user.dir") + "\\data\\in";
 	public static final String diretorioSaida = System.getProperty("user.dir") + "\\data\\out";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
+
+		processarArquivos();
+		
+		WatchService watchService = FileSystems.getDefault().newWatchService();		
+		Path directory = Paths.get(diretorioEntrada);		
+		WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
+	
+		while(true) {
+			for(WatchEvent<?> event : watchKey.pollEvents()) {
+				System.out.println("Arquivos modificados " + event.kind());
+				
+				processarArquivos();				
+				
+				System.out.println("Processo concluído!");
+			}
+		}
+	
+	}
+	
+	private static void processarArquivos() {
 		List<Vendedores> vendedores = new ArrayList<>();
 		List<Clientes> clientes = new ArrayList<>();
 		List<Vendas> vendas = new ArrayList<>();
-
 		List<String> arquivosDat = new ArrayList<>();
-		arquivosDat = listarArquivosDat();
-
 		String dados = "";
+		String[] dadosLinha;
+		
+		arquivosDat = listarArquivosDat();
 
 		for (String caminhoArquivo : arquivosDat) {
 			dados += lerArquivo(caminhoArquivo);
 		}
 
-		String[] dadosLinha;
+		
 
 		dadosLinha = dados.split("\n");
 
