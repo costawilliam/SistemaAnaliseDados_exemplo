@@ -6,9 +6,9 @@ public class Vendedores {
 	String cpf;
 	String nome;
 	double Salario;
-	
+
 	public Vendedores() {
-		
+
 	}
 
 	public Vendedores(String cpf, String nome, double salario) {
@@ -16,46 +16,49 @@ public class Vendedores {
 		this.nome = nome;
 		Salario = salario;
 	}
-	
-	public static Vendedores retornaVendedor(String texto) {		
+
+	public static Vendedores retornaVendedor(String texto) {
 		Vendedores v;
-		
+
 		String[] valores = texto.split("ç");
-		
+
 		String cpf = valores[1];
 		String nome = valores[2];
 		double salario = Double.parseDouble(valores[3]);
-		
+
 		v = new Vendedores(cpf, nome, salario);
-		
-		return v;				
+
+		return v;
 	}
-	
-	public static String retornaPiorVendedor(List<Vendedores> vendedores, List<Vendas> vendas) {		
-		double menorvenda = 0;
+
+	public static String retornaPiorVendedor(List<Vendedores> vendedores, List<Vendas> vendas) {
+		double menorvenda = Double.MAX_VALUE;
 		double saldoVendas = 0;
-		
-		String nomePiorVendedor = "";		
-		
-		for(Vendedores vendedor : vendedores) {
-			for(Vendas v : vendas) {				
-				if(v.getVendedor().equals(vendedor.getNome())) {
+
+		String nomePiorVendedor = "";
+
+		for (Vendedores vendedor : vendedores) {
+			
+			for (Vendas v : vendas) {
+				if (v.getVendedor().equals(vendedor.getNome())) {
 					saldoVendas += Vendas.retornaValorVenda(v);
-				}				
+				}
+			}
+
+			if (saldoVendas < menorvenda) {
+				menorvenda = saldoVendas;
+				nomePiorVendedor = vendedor.getNome();				
 			}
 			
-			if(saldoVendas < menorvenda) {
-				nomePiorVendedor = vendedor.getNome();
-			}			
-		}		
-		
+			saldoVendas = 0;			
+		}
+
 		return nomePiorVendedor;
 	}
 
 	public String getCpf() {
 		return cpf;
 	}
-
 
 	public String getNome() {
 		return nome;
@@ -64,5 +67,5 @@ public class Vendedores {
 	public double getSalario() {
 		return Salario;
 	}
-	
+
 }
