@@ -38,7 +38,7 @@ public class Vendedores {
 		String nomePiorVendedor = "";
 
 		for (Vendedores vendedor : vendedores) {
-			
+
 			for (Vendas v : vendas) {
 				if (v.getVendedor().equals(vendedor.getNome())) {
 					saldoVendas += Vendas.retornaValorVenda(v);
@@ -47,10 +47,10 @@ public class Vendedores {
 
 			if (saldoVendas < menorvenda) {
 				menorvenda = saldoVendas;
-				nomePiorVendedor = vendedor.getNome();				
+				nomePiorVendedor = vendedor.getNome();
 			}
-			
-			saldoVendas = 0;			
+
+			saldoVendas = 0;
 		}
 
 		return nomePiorVendedor;

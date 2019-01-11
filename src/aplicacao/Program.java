@@ -59,37 +59,6 @@ public class Program {
 		gravarArquivo("teste", vendedores, clientes, vendas);
 	}
 
-	public static void gravarArquivo(String nomeArquivo, List<Vendedores> vendedores, List<Clientes> clientes,
-			List<Vendas> vendas) {
-		String nomeArquivoSaida = diretorioSaida + "\\" + nomeArquivo + ".done.dat";
-
-		FileWriter arq;
-		try {
-			arq = new FileWriter(nomeArquivoSaida);
-			PrintWriter gravarArq = new PrintWriter(arq);
-
-			gravarArq.printf("Quantidade de clientes no arquivo de entrada: " + clientes.size());
-			gravarArq.printf("\n");
-
-			gravarArq.printf("Quantidade de vendedores no arquivo de entrada: " + vendedores.size());
-			gravarArq.printf("\n");
-			
-			gravarArq.printf("Quantidade de vendas no arquivo de entrada: " + vendas.size());
-			gravarArq.printf("\n");
-
-			gravarArq.printf("ID da venda mais cara: " + Vendas.retornaVendaMaisCara(vendas));
-			gravarArq.printf("\n");
-
-			gravarArq.printf("O pior vendedor: " + Vendedores.retornaPiorVendedor(vendedores, vendas));
-			gravarArq.printf("\n");
-
-			arq.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	public static List<String> listarArquivosDat() {
 		File caminho = null;
 		File[] arquivos;
@@ -111,6 +80,37 @@ public class Program {
 		}
 
 		return arquivosDat;
+	}
+
+	public static void gravarArquivo(String nomeArquivo, List<Vendedores> vendedores, List<Clientes> clientes,
+			List<Vendas> vendas) {
+		String nomeArquivoSaida = diretorioSaida + "\\" + nomeArquivo + ".done.dat";
+
+		
+		FileWriter arq;
+		try {
+			arq = new FileWriter(nomeArquivoSaida);
+			PrintWriter gravarArq = new PrintWriter(arq);
+
+			gravarArq.printf("Quantidade de clientes no arquivo de entrada: " + clientes.size());
+			gravarArq.printf("\n");
+
+			gravarArq.printf("Quantidade de vendedores no arquivo de entrada: " + vendedores.size());
+			gravarArq.printf("\n");
+
+			gravarArq.printf("Quantidade de vendas no arquivo de entrada: " + vendas.size());
+			gravarArq.printf("\n");
+
+			gravarArq.printf("ID da venda mais cara: " + Vendas.retornaVendaMaisCara(vendas));
+			gravarArq.printf("\n");
+
+			gravarArq.printf("O pior vendedor: " + Vendedores.retornaPiorVendedor(vendedores, vendas));
+			gravarArq.printf("\n");
+
+			arq.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static String lerArquivo(String caminho) {
@@ -139,4 +139,5 @@ public class Program {
 
 		return texto;
 	}
+
 }
