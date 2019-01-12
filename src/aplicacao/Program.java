@@ -27,24 +27,23 @@ public class Program {
 
 	public static void main(String[] args) throws IOException {
 
-		processarArquivos();
-		
-		WatchService watchService = FileSystems.getDefault().newWatchService();		
-		Path directory = Paths.get(diretorioEntrada);		
-		WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
-	
-		while(true) {
-			for(WatchEvent<?> event : watchKey.pollEvents()) {
-				System.out.println("Arquivos modificados " + event.kind());
-				
-				processarArquivos();				
-				
-				System.out.println("Processo concluído!");
+		if (verificarPastas() == true) {
+			processarArquivos();
+
+			WatchService watchService = FileSystems.getDefault().newWatchService();
+			Path directory = Paths.get(diretorioEntrada);
+			WatchKey watchKey = directory.register(watchService, StandardWatchEventKinds.ENTRY_CREATE,
+					StandardWatchEventKinds.ENTRY_DELETE, StandardWatchEventKinds.ENTRY_MODIFY);
+
+			while (true) {
+				for (WatchEvent<?> event : watchKey.pollEvents()) {
+					processarArquivos();
+				}
 			}
 		}
-	
+
 	}
-	
+
 	private static void processarArquivos() {
 		List<Vendedores> vendedores = new ArrayList<>();
 		List<Clientes> clientes = new ArrayList<>();
@@ -52,48 +51,57 @@ public class Program {
 		List<String> arquivosDat = new ArrayList<>();
 		String dados = "";
 		String[] dadosLinha;
-		
+
 		arquivosDat = listarArquivosDat();
 
-		for (String caminhoArquivo : arquivosDat) {
-			dados += lerArquivo(caminhoArquivo);
-		}
+		if (arquivosDat.isEmpty()) {
+			System.out.println("Não há dados para realizar o processamento");
+		} else {
 
-		
-
-		dadosLinha = dados.split("\n");
-
-		for (String dado : dadosLinha) {
-
-			String tipo = dado.substring(0, 3);
-
-			switch (tipo) {
-			case "001":
-				vendedores.add(Vendedores.retornaVendedor(dado));
-				break;
-			case "002":
-				clientes.add(Clientes.retornaCliente(dado));
-				break;
-			case "003":
-				vendas.add(Vendas.retornaVenda(dado));
-				break;
-			default:
-				System.out.println("não reconhecido - " + dado);
-				break;
+			for (String caminhoArquivo : arquivosDat) {
+				dados += lerArquivo(caminhoArquivo);
 			}
-		}
 
-		gravarArquivo("teste", vendedores, clientes, vendas);
+			dadosLinha = dados.split("\n");
+
+			for (String dado : dadosLinha) {
+
+				String tipo = dado.substring(0, 3);
+
+				switch (tipo) {
+				case "001":
+					vendedores.add(Vendedores.retornaVendedor(dado));
+					break;
+				case "002":
+					clientes.add(Clientes.retornaCliente(dado));
+					break;
+				case "003":
+					vendas.add(Vendas.retornaVenda(dado));
+					break;
+				default:
+					System.out.println("não reconhecido - " + dado);
+					break;
+				}
+			}
+
+			gravarArquivo("teste", vendedores, clientes, vendas);
+			System.out.println("Arquivos processados com sucesso!");
+		}
 	}
 
 	public static List<String> listarArquivosDat() {
-		File caminho = null;
+		File diretorio = null;
 		File[] arquivos;
 		List<String> arquivosDat = new ArrayList<>();
 
 		try {
-			caminho = new File(diretorioEntrada);
-			arquivos = caminho.listFiles();
+			diretorio = new File(diretorioEntrada);
+
+			if (!diretorio.exists()) {
+				diretorio.mkdirs();
+			}
+
+			arquivos = diretorio.listFiles();
 
 			for (File arq : arquivos) {
 				String extensao = arq.toString().substring(arq.toString().lastIndexOf("."), arq.toString().length());
@@ -109,11 +117,39 @@ public class Program {
 		return arquivosDat;
 	}
 
+	public static boolean verificarPastas() {
+		File diretorio = new File(diretorioEntrada);
+		Boolean retorno = false;
+
+		if (!diretorio.exists()) {
+			try {
+				diretorio.mkdirs();
+				retorno = true;
+			} catch (Exception e) {
+				System.err.printf("Erro ao criar diretório em %s. \n %s", diretorioSaida, e.getMessage());
+				retorno = false;
+			}
+		}
+
+		diretorio = new File(diretorioSaida);
+		if (!diretorio.exists()) {
+			try {
+				diretorio.mkdirs();
+				retorno = true;
+			} catch (Exception e) {
+				System.err.printf("Erro ao criar diretório em %s. \n %s", diretorioSaida, e.getMessage());
+				retorno = false;
+			}
+		}
+
+		return retorno;
+	}
+
 	public static void gravarArquivo(String nomeArquivo, List<Vendedores> vendedores, List<Clientes> clientes,
 			List<Vendas> vendas) {
+
 		String nomeArquivoSaida = diretorioSaida + "\\" + nomeArquivo + ".done.dat";
 
-		
 		FileWriter arq;
 		try {
 			arq = new FileWriter(nomeArquivoSaida);
