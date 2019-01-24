@@ -21,7 +21,7 @@ public class Vendas {
 	public static Vendas retornaVenda(String texto) {
 		Vendas v;
 
-		String[] valores = texto.split("็");
+		String[] valores = texto.split("รง");
 
 		int id = Integer.parseInt(valores[1]);
 

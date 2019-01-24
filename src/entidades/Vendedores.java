@@ -20,7 +20,7 @@ public class Vendedores {
 	public static Vendedores retornaVendedor(String texto) {
 		Vendedores v;
 
-		String[] valores = texto.split("็");
+		String[] valores = texto.split("รง");
 
 		String cpf = valores[1];
 		String nome = valores[2];

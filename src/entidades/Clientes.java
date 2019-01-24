@@ -18,7 +18,7 @@ public class Clientes {
 	public static Clientes retornaCliente(String texto) {
 		Clientes c;
 
-		String[] valores = texto.split("็");
+		String[] valores = texto.split("รง");
 
 		String cnpj = valores[1];
 		String nome = valores[2];
